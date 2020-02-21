@@ -1,5 +1,7 @@
 package com.qc.springboot.common.aop.redis;
 
+import com.qc.springboot.common.enums.RedisType;
+
 import java.lang.annotation.*;
 
 /**自定义redis缓存注解
@@ -22,6 +24,11 @@ public @interface RedisCache {
      */
     String fieldKey() default "";
 
+    /**
+     * redis的数据类型
+     * @return
+     */
+    RedisType redisType() default RedisType.STRING;
     /**
      * 过期时间
      * @return
