@@ -1,5 +1,7 @@
 package com.qc.springboot.common.aop.redis;
 
+import com.qc.springboot.common.enums.RedisType;
+
 import java.lang.annotation.*;
 
 /**reids自定义注解：用于清除缓存
@@ -21,4 +23,10 @@ public @interface RedisEvict {
      * @return
      */
     String fieldKey() default "" ;
+
+    /**
+     * redis的数据类型
+     * @return
+     */
+    RedisType redisType() default RedisType.STRING;
 }

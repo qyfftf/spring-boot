@@ -6,4 +6,7 @@
     <select id="getByid" resultType="com.qc.springboot.entities.Test">
       select * from test where id=#{id}
     </select>
+    <update id="updateById">
+        update test set name =#{name} where id=#{id}
+    </update>
 </mapper>

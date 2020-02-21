@@ -23,12 +23,19 @@ public class TestController {
     RedisUtils redisUtils;
     @Autowired
     TestService testService;
-    @GetMapping("/test")
+    @GetMapping("/test1")
     @ServcieLimit(limitType = LimitType.IP)
-    public R test(){
+    public R test1(){
         R r = R.ok();
-        Test byId = testService.getById(1);
+        Test byId = testService.getById(2);
         r.setMessage("访问成功"+byId);
+        return r;
+    }
+    @GetMapping("/test2")
+    public R test2(){
+        R r = R.ok();
+        testService.updateById(2,"小红");
+        r.setMessage("访问成功");
         return r;
     }
 }

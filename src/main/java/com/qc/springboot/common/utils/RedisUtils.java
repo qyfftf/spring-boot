@@ -1,6 +1,7 @@
 package com.qc.springboot.common.utils;
 
 import com.alibaba.fastjson.JSON;
+import com.qc.springboot.common.enums.RedisType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -32,6 +33,52 @@ public class RedisUtils {
      * 不设置过期时长
      */
     public final static long NO_EXPIRE=-1;
+    //==============对reids自定义注解 切面的处理获取缓存业务操作封装============================
+    public <T> T redisReadCache(String key, String feild, RedisType redisType,Class<T> clazz){
+        if(redisType.equals(RedisType.STRING)){
+            return get(key,clazz);
+        }else if(redisType.equals(RedisType.HASH)){
+            return hget(key,feild,clazz);
+        }else if(redisType.equals(RedisType.LIST)){
+            //TODO 对list类型的数据进行处理
+        }else if(redisType.equals(RedisType.SET)){
+            //TODO 对set类型的数据进行处理
+        }else if(redisType.equals(RedisType.ZSET)){
+            //TODO 对zset类型的数据进行处理
+        }
+        return null;
+    }
+    //==============对reids自定义注解 切面的处理获取缓存业务操作封装============================
+    public void redisWriteCache(String key, String feild,
+                                RedisType redisType,Object object,
+                                long expire){
+        if(redisType.equals(RedisType.STRING)){
+            set(key,object,expire);
+        }else if(redisType.equals(RedisType.HASH)){
+            hset(key,feild,object);
+        }else if(redisType.equals(RedisType.LIST)){
+            //TODO 对list类型的数据进行处理
+        }else if(redisType.equals(RedisType.SET)){
+            //TODO 对set类型的数据进行处理
+        }else if(redisType.equals(RedisType.ZSET)){
+            //TODO 对zset类型的数据进行处理
+        }
+    }
+    //==============对reids自定义注解 切面的处理清除缓存业务操作封装============================
+    public void redisDelteCache(String key,String feild,
+                                RedisType redisType){
+        if(redisType.equals(RedisType.STRING)){
+            delete(key);
+        }else if(redisType.equals(RedisType.HASH)){
+            hdel(key,feild);
+        }else if(redisType.equals(RedisType.LIST)){
+            //TODO 对list类型的数据进行处理
+        }else if(redisType.equals(RedisType.SET)){
+            //TODO 对set类型的数据进行处理
+        }else if(redisType.equals(RedisType.ZSET)){
+            //TODO 对zset类型的数据进行处理
+        }
+    }
 
     /**
      * 插入缓存默认时间

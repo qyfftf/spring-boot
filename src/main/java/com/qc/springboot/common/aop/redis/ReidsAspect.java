@@ -1,5 +1,6 @@
 package com.qc.springboot.common.aop.redis;
 
+import com.qc.springboot.common.enums.RedisType;
 import com.qc.springboot.common.enums.ResultCodeEnum;
 import com.qc.springboot.common.exception.RedisEvictOrCacheException;
 import com.qc.springboot.common.utils.RedisUtils;
@@ -40,15 +41,19 @@ public class ReidsAspect {
         try{
             MethodSignature methodSignature=(MethodSignature)joinPoint.getSignature();
             Method method = methodSignature.getMethod();
+            log.debug("<======method:{} 进入 redisCache 切面 ======>", method.getName());
             RedisEvict annotation = method.getAnnotation(RedisEvict.class);
+            RedisType redisType = annotation.redisType();
             String key = annotation.key();
             String fieldKey = annotation.fieldKey();
             if(!StringUtils.isEmpty(fieldKey)){
                 fieldKey=parseKey(fieldKey,method,joinPoint.getArgs());
-                redisUtils.hdel(key,fieldKey);
             }
-        }catch(Exception e){
-            e.printStackTrace();
+            redisUtils.redisDelteCache(key,fieldKey,redisType);
+            log.debug("<======method:{} 缓存清理成功 ======>", method.getName());
+        }catch(RedisEvictOrCacheException e){
+            log.error("<====== RedisCache 执行异常: {} ======>", e);
+            new RedisEvictOrCacheException(ResultCodeEnum.REDIS_RW_ERROR);
         }
     }
 
@@ -64,28 +69,22 @@ public class ReidsAspect {
             Method method = methodSignature.getMethod();//获取方法
             Class<?> returnType = method.getReturnType();//获取返回类型
             RedisCache annotation = method.getAnnotation(RedisCache.class);
+            RedisType redisType = annotation.redisType();//获取redis存储的数据类型
             String key = annotation.key();
-            log.debug("<======method:{} 进入 redisCache 切面 ======>", method.getName());
             String fieldKey=annotation.fieldKey();
             Object obj=null;
+            log.debug("<======method:{} 进入 redisCache 切面 ======>", method.getName());
             if(!StringUtils.isEmpty(fieldKey)){
-                fieldKey=parseKey(annotation.fieldKey(),method,joinPoint.getArgs());
-                obj=redisUtils.hget(key,fieldKey,returnType);
-            }else {
-                obj=redisUtils.get(key,returnType);
+                fieldKey= parseKey(annotation.fieldKey(),method,joinPoint.getArgs());
             }
+            obj=redisUtils.redisReadCache(key,
+                    fieldKey,
+                    redisType,returnType);
             if(obj==null){
-                log.debug("<======method:{} 进入 redisCache 切面 ======>", method.getName()+"命中缓存");
+                log.debug("<======method:{} 进入 redisCache 切面 ======>", method.getName()+"未命中缓存");
                 obj=joinPoint.proceed();
-                if(!StringUtils.isEmpty(fieldKey)){
-                    redisUtils.hset(key,fieldKey,obj);
-                }else {
-                    if(annotation.expired()>0){
-                        redisUtils.set(key, obj,annotation.expired());
-                    }else {
-                        redisUtils.set(key, obj);
-                    }
-                }
+                redisUtils.redisWriteCache(key,fieldKey,
+                        redisType,obj,annotation.expired());
             }
             return obj;
         }catch(Throwable e){

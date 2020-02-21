@@ -7,5 +7,7 @@ import com.qc.springboot.entities.Test;
  * @create 2020-02-20 17:51
  */
 public interface TestService {
-    public Test getById(Integer id);
+    Test getById(Integer id);
+
+    void updateById(int i,String name);
 }
