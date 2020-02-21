@@ -12,6 +12,7 @@ import lombok.Getter;
 public enum ResultCodeEnum {
     SUCCESS(true,20000,"成功"),
     LIMIT_IP_ERROR(false,30000,"访问频繁"),
+    REDIS_RW_ERROR(false,40000,"redis处理异常"),
     UNKNOWN_REASON(false, 20000, "未知错误"),
     BAD_SQL_GRAMMAR(false, 20000, "sql语法错误"),
     JSON_PARSE_ERROR(false, 20000, "json解析异常"),

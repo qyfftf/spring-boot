@@ -1,4 +1,4 @@
-package com.qc.springboot.common.aop;
+package com.qc.springboot.common.aop.limit;
 
 import com.qc.springboot.common.enums.LimitType;
 

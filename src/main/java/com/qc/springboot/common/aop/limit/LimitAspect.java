@@ -1,4 +1,4 @@
-package com.qc.springboot.common.aop;
+package com.qc.springboot.common.aop.limit;
 
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
@@ -40,7 +40,7 @@ public class LimitAspect {
     /**
      * 把限流注解作为切入点
      */
-    @Pointcut("@annotation(com.qc.springboot.common.aop.ServcieLimit)")
+    @Pointcut("@annotation(com.qc.springboot.common.aop.limit.ServcieLimit)")
     public void serviceAspect(){};
     @Around("serviceAspect()")
     public Object around(ProceedingJoinPoint joinPoint){
