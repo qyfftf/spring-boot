@@ -1,6 +1,7 @@
 package com.qc.springboot.web.limitip;
 
 import com.qc.springboot.common.aop.limit.ServcieLimit;
+import com.qc.springboot.common.config.redission.RedissonProperties;
 import com.qc.springboot.common.dto.R;
 import com.qc.springboot.common.enums.LimitType;
 import com.qc.springboot.common.utils.RedisUtils;
@@ -23,11 +24,14 @@ public class TestController {
     RedisUtils redisUtils;
     @Autowired
     TestService testService;
+
+    @Autowired
+    RedissonProperties redissonProperties;
     @GetMapping("/test1")
     @ServcieLimit(limitType = LimitType.IP)
     public R test1(){
-        R r = R.ok();
-        Test byId = testService.getById(2);
+        R r = R.ok().data("pro",redissonProperties);
+        Test byId = testService.getById(1);
         r.setMessage("访问成功"+byId);
         return r;
     }

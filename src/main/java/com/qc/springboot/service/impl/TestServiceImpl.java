@@ -18,8 +18,9 @@ public class TestServiceImpl implements TestService {
     @Autowired
     TestMapper testMapper;
     @Override
-    @RedisCache(key = "dept",fieldKey = "#id",redisType = RedisType.HASH)
+
     public Test getById(Integer id) {
+        System.out.println(testMapper.getByid(id));
         return testMapper.getByid(id);
     }
 

@@ -176,6 +176,25 @@ public class RedisUtils {
     public void hdel(String key){
         redisTemplate.delete(key);
     }
+    /*redis的递增与递减*/
+
+    /**
+     *
+     * @param key 操作的key
+     * @param l 递增因子
+     */
+    public long incr(String key,long l){
+        return valueOperations.increment(key, l);
+    }
+
+    /**
+     *
+     * @param key
+     * @param l 递减因子
+     */
+    public long decr(String key,long l){
+        return valueOperations.decrement(key,l);
+    }
     /**
      * object转json
      * @return
